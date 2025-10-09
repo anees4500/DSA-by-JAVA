@@ -1,18 +1,20 @@
  class Solution {
     public int reverse(int x) {
-        boolean isNegative = x < 0;
-        long num = Math.abs((long)x); // ✅ cast to long BEFORE abs()
+        int rev = 0;
 
-        StringBuilder sb = new StringBuilder(String.valueOf(num));
-        sb.reverse();
+        while (x != 0) {
+            int digit = x % 10;  // extract last digit
+            x /= 10;             // remove last digit
 
-        long reversed = Long.parseLong(sb.toString());
-        if (isNegative) reversed = -reversed;
+            // \U0001f6d1 Check overflow before multiplying by 10
+            if (rev > Integer.MAX_VALUE / 10 || (rev == Integer.MAX_VALUE / 10 && digit > 7))
+                return 0;
+            if (rev < Integer.MIN_VALUE / 10 || (rev == Integer.MIN_VALUE / 10 && digit < -8))
+                return 0;
 
-        if (reversed < Integer.MIN_VALUE || reversed > Integer.MAX_VALUE) {
-            return 0; // ✅ handle overflow
+            rev = rev * 10 + digit; // build reversed number
         }
 
-        return (int) reversed;
+        return rev;
     }
 }
