@@ -1,35 +1,18 @@
  class Solution {
     public int reverse(int x) {
-        Stack<Character> st = new Stack<>();
-        String str = String.valueOf(x);
-        StringBuilder sb = new StringBuilder();
+        boolean isNegative = x < 0;
+        long num = Math.abs((long)x); // ✅ cast to long BEFORE abs()
 
-        int start = 0;
-        if (str.charAt(0) == '-') start = 1;  // skip '-' sign
+        StringBuilder sb = new StringBuilder(String.valueOf(num));
+        sb.reverse();
 
-        
-        for (int i = start; i < str.length(); i++) {
-            st.push(str.charAt(i));
+        long reversed = Long.parseLong(sb.toString());
+        if (isNegative) reversed = -reversed;
+
+        if (reversed < Integer.MIN_VALUE || reversed > Integer.MAX_VALUE) {
+            return 0; // ✅ handle overflow
         }
 
-        
-        while (!st.isEmpty()) {
-            sb.append(st.pop());
-        }
-
-       
-        if (str.charAt(0) == '-') {
-            sb.insert(0, '-');
-        }
-
-     
-        long num = Long.parseLong(sb.toString());
-
-         
-        if (num > Integer.MAX_VALUE || num < Integer.MIN_VALUE) {
-            return 0;
-        }
-
-        return (int) num;
+        return (int) reversed;
     }
 }
