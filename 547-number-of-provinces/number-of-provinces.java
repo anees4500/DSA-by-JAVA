@@ -31,7 +31,7 @@ class Solution {
             int[] edge = isConnected[i];
 
             for(int j = 0; j<edge.length; j++){
-                if(  isConnected[i][j]==1){
+                if( i!=j &&  isConnected[i][j]==1){
                     adj.get(i).add(j);
                     adj.get(j).add(i);
                 }
