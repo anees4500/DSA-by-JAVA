@@ -1,41 +1,43 @@
- class Solution {
-
-    public int height(TreeNode root) {
-        if (root == null) return 0;
-        int l = height(root.left);
-        int r = height(root.right);
-        return 1 + Math.max(l, r);
-    }
-
-    public void helper(TreeNode root, int level, List<Integer> list) {
-        if (root == null) return;
-
-        if (level == 0) {
-            list.add(root.val);
-            return;
-        }
-
-        helper(root.left, level - 1, list);
-        helper(root.right, level - 1, list);
-    }
-
+ /**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
     public List<Double> averageOfLevels(TreeNode root) {
-        int h = height(root);
-        List<Double> ans = new ArrayList<>();
+        List<Double> li = new ArrayList<>();
+        levelOrder(root,li);
+        return li;
+    }
 
-        for (int i = 0; i < h; i++) {
-            List<Integer> list = new ArrayList<>();
-            helper(root, i, list);
-
-             long tot = 0;
-            for (int val : list) {
-                tot += val;
+    public static void levelOrder(TreeNode root,List<Double> li){
+        Queue<TreeNode> qu = new LinkedList<>();
+        qu.add(root);
+        while(!qu.isEmpty()){
+            int size = qu.size();
+            int store = size;
+            double sum = 0;
+            while(size-->0){
+                TreeNode presentNode = qu.remove();
+                sum += presentNode.val;
+                if(presentNode.left!=null){
+                    qu.add(presentNode.left);
+                }
+                if(presentNode.right!=null){
+                    qu.add(presentNode.right);
+                }
             }
-
-            double avg = (double) tot / list.size();
-            ans.add(avg);
+            li.add(sum/store);            
         }
-
-        return ans;
     }
 }
