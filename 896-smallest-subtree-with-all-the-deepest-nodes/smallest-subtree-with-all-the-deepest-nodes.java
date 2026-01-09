@@ -1,40 +1,35 @@
- class Solution {
-    public TreeNode subtreeWithAllDeepest(TreeNode root) {
-        int maxDepth = getMaxDepth(root);
-        List<TreeNode> deepestNodes = new ArrayList<>();
-        collectDeepest(root, 0, maxDepth, deepestNodes);
+class Solution {
 
-        // case 1: only one deepest node
-        if (deepestNodes.size() == 1) {
-            return deepestNodes.get(0);
+    public int height(TreeNode root) {
+        if (root == null) return 0;
+        return 1 + Math.max(height(root.left), height(root.right));
+    }
+
+    TreeNode ans = null;
+
+    public void answer(TreeNode root, int maxHeight) {
+        if (root == null) return;
+
+        int leftH = height(root.left);
+        int rightH = height(root.right);
+
+        // SAME LOGIC but correct check
+        if (leftH == rightH && leftH == maxHeight - 1) {
+            ans = root;
+            return;
         }
 
-        // case 2: multiple deepest nodes -> find their LCA
-        return findLCA(root, deepestNodes);
+        // deeper side me jao
+        if (leftH > rightH) {
+            answer(root.left, maxHeight - 1);
+        } else {
+            answer(root.right, maxHeight - 1);
+        }
     }
 
-    // Step 1: find max depth
-    private int getMaxDepth(TreeNode root) {
-        if (root == null) return 0;
-        return 1 + Math.max(getMaxDepth(root.left), getMaxDepth(root.right));
-    }
-
-    // Step 2: collect all nodes at max depth
-    private void collectDeepest(TreeNode root, int depth, int maxDepth, List<TreeNode> list) {
-        if (root == null) return;
-        if (depth + 1 == maxDepth) list.add(root);
-        collectDeepest(root.left, depth + 1, maxDepth, list);
-        collectDeepest(root.right, depth + 1, maxDepth, list);
-    }
-
-    // Step 3: find LCA for multiple nodes
-    private TreeNode findLCA(TreeNode root, List<TreeNode> nodes) {
-        if (root == null || nodes.contains(root)) return root;
-
-        TreeNode left = findLCA(root.left, nodes);
-        TreeNode right = findLCA(root.right, nodes);
-
-        if (left != null && right != null) return root;
-        return left != null ? left : right;
+    public TreeNode subtreeWithAllDeepest(TreeNode root) {
+        int h = height(root);
+        answer(root, h);
+        return ans;
     }
 }
