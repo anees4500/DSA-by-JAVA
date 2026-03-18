@@ -14,53 +14,23 @@
  * }
  */
 class Solution {
-    // public boolean isTrue(TreeNode root){
 
-        // if(root==null){
-        //     return true;
-        // }
+    public boolean helper(TreeNode root , long left , long right){
+        if(root==null) return true;
 
-        // if(root.left==null && root.right==null){
-        //     return true;
-        // }
-        // else if((root.left != null && root.val>root.left.val ) && (root.right != null && root.val<root.right.val)){
-        //     return isTrue(root.left) && isTrue(root.right);
-        // }
-        // else if((root.left != null && root.val>root.left.val ) && root.right == null){
-        //     return isTrue(root.left);
-        // }
-        // else if((root.right != null && root.val<root.right.val) && root.left == null){
-        //     return isTrue(root.right);
-        // }
-        // else{
-        //     return false;
-        // }
-    // }
 
-    public  void helper(TreeNode root, ArrayList<Integer>  ans ){
-        if(root==null){
-            return ;
+        if(root.val<=left || root.val>=right){
+            return false;
         }
 
-        helper(root.left, ans);
-        ans.add(root.val);
-        helper(root.right, ans);
+        return helper(root.left,left , root.val) && helper( root.right, root.val,right);
 
+
+        
+
+        
     }
-
     public boolean isValidBST(TreeNode root) {
-        ArrayList<Integer> ans = new ArrayList<>();
-
-        helper(root,ans);
-
-        for(int i = 1; i<ans.size(); i++){
-            if(ans.get(i)<=ans.get(i-1)){
-                return false;
-            }
-        }
-
-        return true;
-
-
+        return helper(root,Long.MIN_VALUE, Long.MAX_VALUE);
     }
 }
