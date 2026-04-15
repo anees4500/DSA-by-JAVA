@@ -1,26 +1,39 @@
 class Solution {
-    public int minPathSum(int[][] grid) {
-        int[][] dp = new int[grid.length][grid[0].length];
-        int n = grid.length;
-        int m = grid[0].length;
-        
-        for(int i = n-1 ; i>=0; i-- ){
-            for(int j = m-1; j>=0; j--){
-                if(i==n-1 && j==m-1){
-                    dp[i][j] = grid[i][j];
-                }
-                else if(i==n-1){
-                    dp[i][j] = grid[i][j] + dp[i][j+1];
-                }
-                else if(j==m-1){
-                    dp[i][j] = grid[i][j] + dp[i+1][j];
-                }
-                else{
-                    dp[i][j ]= grid[i][j] + Math.min(dp[i+1][j], dp[i][j+1]);
-                }
-            }
+
+    public int dfs(int[][] grid, int i, int j, int[][] dp){
+
+        // out of bound
+        if(i < 0 || j < 0){
+            return Integer.MAX_VALUE;
         }
 
-        return dp[0][0];
+        // base case
+        if(i == 0 && j == 0){
+            return grid[0][0];
+        }
+
+        // memo check
+        if(dp[i][j] != -1){
+            return dp[i][j];
+        }
+
+        int up = dfs(grid, i-1, j, dp);
+        int left = dfs(grid, i, j-1, dp);
+
+        return dp[i][j] = Math.min(up, left) + grid[i][j];
+    }
+
+    public int minPathSum(int[][] grid) {
+        
+        int n = grid.length;
+        int m = grid[0].length;
+
+        int[][] dp = new int[n][m];
+
+        for(int i = 0; i < n; i++){
+            Arrays.fill(dp[i], -1);
+        }
+
+        return dfs(grid, n-1, m-1, dp);
     }
 }
