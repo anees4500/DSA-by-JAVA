@@ -1,25 +1,62 @@
 class Solution {
-    public int lengthOfLIS(int[] nums) {
+    
 
+    public int helper(int nums[] , int[] num2 , int i , int j , int dp[][]){
 
-        int[] dp = new int[nums.length];
+        
 
-        Arrays.fill(dp,1);
-
-        for(int i = 1; i<nums.length; i++){
-            for(int j = 0; j<i; j++){
-                if(nums[i]>nums[j]){
-                    dp[i] = Math.max(dp[i],  dp[j]+1);
-                }
-            }
+        if(i>=nums.length || j>=num2.length){
+            return 0;
         }
 
-        int max = 0;
-
-        for(int len : dp){
-            max = Math.max(max,len);
+        if(dp[i][j]!=-1){
+            return dp[i][j] ;
         }
 
-        return max;
+         
+
+        
+        if(nums[i]==num2[j]){
+            return dp[i][j] =  1 + helper(nums,num2, i + 1, j+1 , dp);
+        }
+        return dp[i][j] =  Math.max(helper(nums, num2 , i+1, j , dp) , helper(nums,num2, i , j+1 , dp));
     }
+
+
+    public int lengthOfLIS(int[] nums) {
+        int n = nums.length;
+
+        int num2[] = new int[n];
+
+        
+
+
+
+        HashSet<Integer> set = new HashSet<>();
+
+        for(int i = 0; i<n; i++){
+            set.add(nums[i]);
+        }
+
+        int dp[][] = new int[nums.length][num2.length];
+        
+        for(int i = 0; i<n; i++){
+           Arrays.fill(dp[i] , -1);
+        }
+
+        // dp[0][0] = 1;
+
+        int j = 0;
+
+        for(int i : set){
+            num2[j] = i;
+            j++;
+        }
+
+        Arrays.sort(num2);
+
+        return helper(nums, num2, 0 ,0 , dp);
+        
+    }
+
 }
