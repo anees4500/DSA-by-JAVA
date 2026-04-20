@@ -1,35 +1,46 @@
 class Solution {
 
-    Long[][] mem;
+    long dp[][] ;
 
-    public long helper(int idx, int[] nums, int flag){
+    public long helper(int[] nums , int i  , int flag){
 
-        if(idx >= nums.length){
+        if(i>=nums.length){
             return 0;
         }
 
-        if(mem[idx][flag] != null){
-            return mem[idx][flag];
+        if(dp[i][flag]!=-1){
+            return dp[i][flag];
         }
 
-        // skip → flag same
-        long skip = helper(idx+1, nums, flag);
 
-        long val = nums[idx];
-        if(flag == 0){
+
+        long skip = helper(nums, i + 1, flag);
+
+        int val = nums[i];
+
+        if(flag==0){
             val = -val;
         }
 
-        // take → flag flip
-        long take = helper(idx+1, nums, 1-flag) + val;
+      
 
-        return mem[idx][flag] = Math.max(skip, take);
+        long take = helper(nums, i+ 1, 1-flag) + val;
+
+        return dp[i][flag] = Math.max(take,skip );
     }
-
     public long maxAlternatingSum(int[] nums) {
 
-        mem = new Long[nums.length][2];
+        dp = new long[nums.length][2];
 
-        return helper(0, nums, 1);
+        for(int i = 0; i<nums.length; i++){
+            Arrays.fill(dp[i], -1);
+        }
+
+        
+
+        return helper(nums , 0, 1);
+
+
+
     }
 }
