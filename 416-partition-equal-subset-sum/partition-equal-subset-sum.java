@@ -1,36 +1,46 @@
 class Solution {
-    public static boolean helper(int[] arr, int sum, int i, Boolean[][] dp) {
-        if(sum == 0) return true;
-        if(i == arr.length) return false;
 
-        if(dp[i][sum] != null) return dp[i][sum];
+    public boolean func(int i, int target, int[] nums, Boolean[][] dp) {
 
-        if(arr[i] > sum) 
-            dp[i][sum] = helper(arr, sum, i+1, dp);
-        else
-            dp[i][sum] = helper(arr, sum - arr[i], i+1, dp) || helper(arr, sum, i+1, dp);
-
-        return dp[i][sum];
-    }
-
-
-    public boolean canPartition(int[] nums) {
-        int sum = 0;
-
-        for(int i = 0; i<nums.length; i++){
-            sum+=nums[i];
+        if(target == 0){
+            return true;
         }
 
-        if(sum%2==1){
+        if(i == 0){
+            return nums[0] == target;
+        }
+
+        if(dp[i][target] != null){
+            return dp[i][target];
+        }
+
+        boolean notTake = func(i - 1, target, nums, dp);
+
+        boolean take = false;
+
+        if(nums[i] <= target){
+            take = func(i - 1, target - nums[i], nums, dp);
+        }
+
+        return dp[i][target] = take || notTake;
+    }
+
+    public boolean canPartition(int[] nums) {
+
+        int sum = 0;
+
+        for(int num : nums){
+            sum += num;
+        }
+
+        if(sum % 2 != 0){
             return false;
         }
 
-        Boolean[][] dp = new Boolean[nums.length][sum/2 +1];
+        int target = sum / 2;
 
-        return helper(nums,sum/2 , 0 , dp);
+        Boolean[][] dp = new Boolean[nums.length][target + 1];
 
-
-
-
+        return func(nums.length - 1, target, nums, dp);
     }
 }
