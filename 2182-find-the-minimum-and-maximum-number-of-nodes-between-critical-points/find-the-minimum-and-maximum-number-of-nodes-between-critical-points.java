@@ -6,7 +6,19 @@ class Solution {
         ListNode prev = head;
         ListNode curr = head.next;
 
+        if(curr.next==null){
+            return new int[]{-1,-1};
+        }
+
         int pos = 2;
+
+        int fc = -1;
+        int lc = -1;
+        int pc = -1;
+
+        int min = Integer.MAX_VALUE;
+
+        
 
         while (curr != null && curr.next != null) {
 
@@ -15,7 +27,20 @@ class Solution {
             if ((curr.val > prev.val && curr.val > next.val) ||
                 (curr.val < prev.val && curr.val < next.val)) {
 
-                list.add(pos);
+                if(fc==-1){
+                    fc = pos;
+                    pc = pos;
+                    lc = pos;
+                }
+                else{
+                    lc = pos;
+                    min = Math.min(min, lc - pc);
+                    pc = pos;
+                }
+
+                
+
+                
             }
 
             prev = curr;
@@ -23,20 +48,13 @@ class Solution {
             pos++;
         }
 
-        // Less than 2 critical points
-        if (list.size() < 2) {
-            return new int[]{-1, -1};
+        if(min==Integer.MAX_VALUE || min==0){
+            return  new int[]{-1, -1};
         }
 
-        int min = Integer.MAX_VALUE;
+        int max = lc - fc;
 
-        // Minimum = distance between adjacent critical points
-        for (int i = 1; i < list.size(); i++) {
-            min = Math.min(min, list.get(i) - list.get(i - 1));
-        }
-
-        // Maximum = first critical point to last critical point
-        int max = list.get(list.size() - 1) - list.get(0);
+         
 
         return new int[]{min, max};
     }
