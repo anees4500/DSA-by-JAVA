@@ -1,7 +1,6 @@
 class Solution {
 
-    Integer[][] dp ;
-    public int helper(String s , String t , int i , int j){
+    public int  helper(String s, String t, int i ,int j , int[][] dp){
 
         if(j==t.length()){
             return 1;
@@ -11,44 +10,27 @@ class Solution {
             return 0;
         }
 
-        if(dp[i][j]!=null){
+        if(dp[i][j]!=-1){
             return dp[i][j];
         }
 
-        
+        int take = 0;
 
-
-
-        int skip = 0;
-        int take  = 0;
-
-
-         
-        
         if(s.charAt(i)==t.charAt(j)){
-             
-            take = helper(s,t,i+1,j+1);
-             
-
-
+            take =  helper(s,t,i+1,j+1 , dp);
         }
 
-        skip = helper(s,t,i+1,j);
-
-        return dp[i][j] = take + skip;
+        return  dp[i][j] =  helper(s,t,i+1,j , dp)+ take;
     }
-
-
     public int numDistinct(String s, String t) {
 
-        dp = new Integer[s.length()][t.length()];
+        int[][] dp = new int[s.length()][t.length()];
 
+        for(int i = 0; i<s.length(); i++){
+            Arrays.fill(dp[i] , -1);
+        }
 
-
-        return helper(s,t,0,0);
-
-    
-
+        return helper(s,t,0,0 , dp);
 
         
     }
