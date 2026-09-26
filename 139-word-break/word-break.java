@@ -1,81 +1,32 @@
- class Solution {
+class Solution {
 
-    public class Node {
-        Node[] children = new Node[26];
-        boolean eow = false;
-    }
+    Boolean dp[][];
+    public boolean help(String s , int i , int j ,  List<String> wordDict){
 
-    Node root = new Node();
-    Map<String, Boolean> memo = new HashMap<>();
-
-    public void insert(String str){
-        Node curr = root;
-
-        for(int i = 0; i < str.length(); i++){
-            int idx = str.charAt(i) - 'a';
-
-            if(curr.children[idx] == null){
-                curr.children[idx] = new Node();
-            }
-
-            curr = curr.children[idx];
-
-            if(i == str.length() - 1){
-                curr.eow = true;
-            }
-        }
-    }
-
-    public boolean search(String key){
-        Node curr = root;
-
-        for(int i = 0; i < key.length(); i++){
-            int idx = key.charAt(i) - 'a';
-
-            if(curr.children[idx] == null){
-                return false;
-            }
-
-            curr = curr.children[idx];
-
-            if(i == key.length() - 1 && curr.eow == false){
-                return false;
-            }
+        if(j==s.length()){
+            return dp[i][j] = wordDict.contains(s.substring(i,j));
         }
 
-        return true;
-    }
-
-    public boolean wb(String s, List<String> wd){
-
-        if(s.length() == 0){
-            return true;
+        if(dp[i][j]!=null){
+            return dp[i][j];
         }
 
-        // ⭐ MEMOIZATION (MAIN FIX)
-        if(memo.containsKey(s)) return memo.get(s);
+        String sub = s.substring(i,j);
 
-        for(int i = 1; i <= s.length(); i++){
 
-            String pre = s.substring(0, i);
-            String suf = s.substring(i);
-
-            if(search(pre) && wb(suf, wd)){
-                memo.put(s, true);
-                return true;
-            }
+        if(wordDict.contains(sub)){
+            return dp[i][j] = help(s,j,j , wordDict) || help(s,i,j+1 , wordDict);
         }
 
-        memo.put(s, false);
-        return false;
+        return dp[i][j] = help(s,i,j+1 , wordDict);
+
     }
 
     public boolean wordBreak(String s, List<String> wordDict) {
+        
 
-        for(String w : wordDict){
-            insert(w);
-        }
+        dp = new Boolean[s.length() +1][s.length()+1];
 
-        return wb(s, wordDict);
+         return help(s,0,0,wordDict);
     }
 }
