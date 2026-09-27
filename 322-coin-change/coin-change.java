@@ -1,50 +1,46 @@
- 
-
 class Solution {
 
-    static final int INF = 1000000;
+    int dp[];
+    public int coinChangeHelper(int[] coins  , int amount){
 
-    public int help(int[] coins, int idx, int amt, int[][] dp) {
-
-        // Successfully made the amount
-        if (amt == 0) {
+        if(amount< 0){
+            return 1_000_000_007 ;
+        }
+        if(amount==0){
             return 0;
         }
 
-        // No coins left, but amount is still remaining
-        if (idx < 0) {
-            return INF;
+         
+
+        if(dp[amount]!=-1){
+            return dp[amount];
+        }
+        
+        int ans = 1_000_000_007;
+
+        for(int i = 0 ; i<coins.length; i++){
+            ans = Math.min(ans , coinChangeHelper(coins,    amount - coins[i]) + 1);
         }
 
-        if (dp[idx][amt] != -1) {
-            return dp[idx][amt];
-        }
-
-        // Don't take the current coin
-        int notTake = help(coins, idx - 1, amt, dp);
-
-        // Take the current coin
-        int take = INF;
-
-        if (coins[idx] <= amt) {
-            take = 1 + help(coins, idx, amt - coins[idx], dp);
-        }
-
-        return dp[idx][amt] = Math.min(take, notTake);
+        return dp[amount] = ans;
     }
-
     public int coinChange(int[] coins, int amount) {
 
-        int n = coins.length;
+        dp = new int[amount+1];
 
-        int[][] dp = new int[n][amount + 1];
+        
 
-        for (int i = 0; i < n; i++) {
-            Arrays.fill(dp[i], -1);
+        Arrays.fill(dp , -1) ;
+
+        dp[0] = 0;
+
+        coinChangeHelper(coins,amount);
+
+        if(dp[amount]==1_000_000_007){
+            return -1;
         }
 
-        int ans = help(coins, n - 1, amount, dp);
-
-        return ans >= INF ? -1 : ans;
+        return dp[amount];
+        
     }
 }
