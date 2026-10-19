@@ -1,43 +1,60 @@
+ 
+import java.util.*;
+
 class Solution {
 
-    public boolean dfs(int src , List<List<Integer>> adj, boolean vis[], boolean stack[]){
-        vis[src] = true;
-        stack[src] = true;
-        for(int i : adj.get(src)){
-            if(!vis[i]){
-                if(dfs(i,adj,vis,stack)) return true;
-            }
-            else if(stack[i]){
-                return true;    // cycle found
+    int[] vis;
+
+    public boolean dfs(List<List<Integer>> adj, int src) {
+
+        // Node is currently in the recursion stack:
+        // a back edge means a cycle exists.
+        if (vis[src] == 2) {
+            return true;
+        }
+
+        // Node has already been completely processed.
+        if (vis[src] == 1) {
+            return false;
+        }
+
+        vis[src] = 2;
+
+        for (int nei : adj.get(src)) {
+
+            if (dfs(adj, nei)) {
+                return true;
             }
         }
-        stack[src] = false;
-        return false; 
-    }
- 
-    
-    public boolean canFinish(int numC, int[][] pre) {
-        List<List<Integer>> adj = new ArrayList<>();
 
-        for(int i = 0; i<numC; i++){
+        // Mark node as completely processed.
+        vis[src] = 1;
+
+        return false;
+    }
+
+    public boolean canFinish(int numCourses, int[][] prerequisites) {
+
+        List<List<Integer>> adj = new ArrayList<>();
+        vis = new int[numCourses];
+
+        for (int i = 0; i < numCourses; i++) {
             adj.add(new ArrayList<>());
         }
 
-        for(int ed[] : pre){
-            int s = ed[0];
-            int d = ed[1];
+        for (int[] edge : prerequisites) {
+            int course = edge[0];
+            int prerequisite = edge[1];
 
-            adj.get(d).add(s);
+            adj.get(course).add(prerequisite);
         }
-        boolean vis[] = new boolean[numC];
 
-        boolean stack[] = new boolean[numC];
-
-        for(int i = 0; i<numC; i++){
-            if(!vis[i]){
-                if(dfs(i,adj,vis, stack)) return false;
+        for (int i = 0; i < numCourses; i++) {
+            if (vis[i] == 0 && dfs(adj, i)) {
+                return false;
             }
         }
+
         return true;
     }
 }
